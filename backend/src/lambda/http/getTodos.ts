@@ -5,7 +5,7 @@ import {
   APIGatewayProxyResult,
 } from "aws-lambda";
 import * as AWS from "aws-sdk";
-import * as Winstom from "../../utils/logger";
+import { createLogger } from "../../utils/logger";
 import { parseUserId } from "../../auth/utils";
 
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -15,8 +15,8 @@ const todosTable = process.env.TODOS_TABLE;
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const logger = Winstom.createLogger("getAllTodos");
-  logger.info("EVENT:", event);
+  const logger = createLogger("getAllTodos");
+  logger.info("Event data:", event);
 
   const authHeader = event.headers.Authorization;
   const authSplit = authHeader.split(" ");
