@@ -1,17 +1,20 @@
 import * as AWS from "aws-sdk";
+import * as AWSXRAY from "aws-xray-sdk";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { TodoItem } from "../models/TodoItem";
 import { TodoUpdate } from "../models/TodoUpdate";
 
+const XAWS = AWSXRAY.captureAWS(AWS);
+
 function createDynamoDBClient(): DocumentClient {
   if (process.env.IS_OFFLINE) {
-    return new AWS.DynamoDB.DocumentClient({
+    return new XAWS.DynamoDB.DocumentClient({
       region: "localhost",
       endpoint: "localstack:4569",
       sslEnabled: false,
     });
   }
-  return new AWS.DynamoDB.DocumentClient();
+  return new XAWS.DynamoDB.DocumentClient();
 }
 
 export class TodoAccessModel {
