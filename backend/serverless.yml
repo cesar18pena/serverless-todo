@@ -21,6 +21,13 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-2'}
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: "*"
+
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     AUTH_0_SECRET: KVKcxfyF7-8ctilonq2MMPcwkG9QpvfTSyyGfjOe-YLJMAnb5cOzxyQw6JhlLzia
