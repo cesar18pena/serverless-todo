@@ -2,6 +2,8 @@
   "name": "serverless-todo-app",
   "version": "1.0.0",
   "description": "Serverless TODO image app",
+  "author": "Cesar Peña",
+  "license": "MIT",
   "scripts": {
     "offline": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR sls offline start",
     "deploy": "sls deploy --verbose"
@@ -14,6 +16,7 @@
     "http-errors": "^1.7.2",
     "jsonwebtoken": "^8.5.1",
     "middy": "^0.27.0",
+    "serverless-dynamodb-local": "^0.2.38",
     "source-map-support": "^0.5.11",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
@@ -25,13 +28,13 @@
     "aws-sdk": "^2.433.0",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-iam-roles-per-function": "^1.0.4",
+    "serverless-offline": "^5.10.1",
     "serverless-plugin-canary-deployments": "^0.4.7",
     "serverless-reqvalidator-plugin": "^1.0.3",
+    "serverless-s3-local": "^0.5.0",
     "serverless-webpack": "^5.2.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.4.1",
     "webpack": "^4.29.6"
-  },
-  "author": "Ivan Mushketyk",
-  "license": "MIT"
+  }
 }
