@@ -6,6 +6,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
+  - serverless-s3-local
   - serverless-dynamodb-local
   - serverless-offline
 
@@ -71,8 +72,6 @@ functions:
       - http:
           method: get
           path: todos
-          cors: true
-    iamRoleStatementsName: ${self:service.name}-get-todos-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -91,12 +90,13 @@ functions:
           method: post
           path: todos
           cors: true
-          reqValidatorName: RequestValidator
+          request:
+            schema:
+              application/json: ${file(models/create-todo-model.json)}
           documentation:
             summary: add new todo
             description: add new todo
-            requestModels:
-              "application/json": CreateTodo
+
     iamRoleStatementsName: ${self:service.name}-create-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -112,12 +112,13 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
-          reqValidatorName: RequestValidator
+          request:
+            schema:
+              application/json: ${file(models/update-todo-model.json)}
           documentation:
             summary: update todo
             description: update todo
-            requestModels:
-              "application/json": UpdateTodo
+
     iamRoleStatementsName: ${self:service.name}-update-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -163,6 +164,18 @@ functions:
 resources:
   Resources:
     # TODO: Add any necessary AWS resources
+    Gateway:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
     TodosDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
