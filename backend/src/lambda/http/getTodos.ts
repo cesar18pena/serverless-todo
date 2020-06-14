@@ -22,7 +22,6 @@ const getHandler: APIGatewayProxyHandler = async (
   const userId = authSplit[1];
 
   const items = await getAllTodos(userId);
-  console.log("Request got here");
   const result = {
     statusCode: 200,
     headers: {
