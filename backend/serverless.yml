@@ -4,6 +4,11 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
+  - serverless-s3-local
+  - serverless-dynamodb-local
+  - serverless-offline
 
 provider:
   name: aws
@@ -17,6 +22,44 @@ provider:
     AUTH_0_SECRET: KVKcxfyF7-8ctilonq2MMPcwkG9QpvfTSyyGfjOe-YLJMAnb5cOzxyQw6JhlLzia
     S3_BUCKET: cesar-serverless-todo-s3-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
+
+#TODO: add custom configuration
+custom:
+  serverless-offline:
+    host: 0.0.0.0
+    port: 4000
+
+  dynamodb:
+    stages:
+      - dev
+    start:
+      migrate: true
+      noStart: true
+      host: localstack
+      port: 4569
+
+  s3:
+    noStart: true
+    port: 4572
+    host: localstack
+    directory: /tmp
+
+  serverless-iam-roles-per-function:
+    defaultInherit: true
+
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Serverless my todos app
+        description: Serverless todo app
+    models:
+      - name: CreateTodo
+        contentType: application/json
+        schema: ${file(models/create-todo-model.json)}
+      - name: UpdateTodo
+        contentType: application/json
+        schema: ${file(models/update-todo-model.json)}
 
 functions:
   Auth:
@@ -49,6 +92,12 @@ functions:
           method: post
           path: todos
           cors: true
+          reqValidatorName: RequestValidator
+          documentation:
+            summary: add new todo
+            description: add new todo
+            requestModels:
+              "application/json": CreateTodo
     iamRoleStatementsName: ${self:service.name}-create-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -64,6 +113,12 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
+          reqValidatorName: RequestValidator
+          documentation:
+            summary: update todo
+            description: update todo
+            requestModels:
+              "application/json": UpdateTodo
     iamRoleStatementsName: ${self:service.name}-update-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
